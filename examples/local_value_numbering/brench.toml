@@ -9,9 +9,9 @@ pipeline = [
   "brili -p {args}",
 ]
 
-[runs.remove_nops]
+[runs.local_value_numbering]
 pipeline = [
   "bril2json",
-  "python3 remove_nops.py",
+  "python3 local_value_numbering.py",
   "brili -p {args}",
 ]
