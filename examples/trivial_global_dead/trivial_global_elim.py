@@ -337,9 +337,64 @@ if __name__ == "__main__":
         for instr in node:
             if "dest" in instr:
                 if "args" in instr:
-                    new_data[instr["dest"]] = fold_constant(
-                        Value(instr["op"], instr["args"])
-                    )
+                    ret = fold_constant(Value(instr["op"], instr["args"]))
+                    if ret != None:
+                        new_data[instr["dest"]] = ret
+                        instr.update({"op": "const", "value": ret})
+                elif instr["op"] == "const":
+                    new_data[instr["dest"]] = instr["value"]
+
+        return new_data
+
+    def transition_fn_constant(node, data):
+        new_data = data.copy()
+
+        def fold_constant(value):
+            if value.op in FOLDABLE_OPS:
+                try:
+                    const_args = [new_data[n] for n in value.args]
+                    return FOLDABLE_OPS[value.op](*const_args)
+                except KeyError:  # At least one argument is not a constant.
+                    if (
+                        value.op in {"eq", "ne", "le", "ge"}
+                        and value.args[0] == value.args[1]
+                    ):
+                        # Equivalent arguments may be evaluated for equality.
+                        # E.g. `eq x x`, where `x` is not a constant evaluates
+                        # to `true`.
+                        return value.op != "ne"
+
+                    if value.op in {"and", "or"} and any(
+                        v in new_data for v in value.args
+                    ):
+                        # Short circuiting the logical operators `and` and `or`
+                        # for two cases: (1) `and x c0` -> false, where `c0` a
+                        # constant that evaluates to `false`. (2) `or x c1`  ->
+                        # true, where `c1` a constant that evaluates to `true`.
+                        const_val = data[
+                            (
+                                value.args[0]
+                                if value.args[0] in new_data
+                                else value.args[1]
+                            )
+                        ]
+                        if (value.op == "and" and not const_val) or (
+                            value.op == "or" and const_val
+                        ):
+                            return const_val
+                    return None
+                except ZeroDivisionError:  # If we hit a dynamic error, bail!
+                    return None
+            else:
+                return None
+
+        for instr in node:
+            if "dest" in instr:
+                if "args" in instr:
+                    ret = fold_constant(Value(instr["op"], instr["args"]))
+                    if ret != None:
+                        new_data[instr["dest"]] = ret
+                        instr.update({"op": "const", "value": ret})
                 elif instr["op"] == "const":
                     new_data[instr["dest"]] = instr["value"]
 
@@ -349,14 +404,7 @@ if __name__ == "__main__":
         data_in, _data_out = perform_analysis(
             fn, transition_fn=transition_fn, forward=True, must_analysis=True
         )
-        for node in data_in:
-            for instr in fn["instrs"]:
-                if (
-                    "dest" in instr
-                    and instr["dest"] in data_in[node]
-                    and data_in[node][instr["dest"]] is not None
-                ):
-                    instr.update({"op": "const", "value": data_in[node][instr["dest"]]})
+
     # data_in, data_out = perform_analysis(prog, None)
 
     json.dump(prog, sys.stdout, indent=2)
