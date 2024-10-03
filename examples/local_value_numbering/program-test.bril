@@ -1,0 +1,22 @@
+@tdce() {
+  a: int = const 1;
+  b: int = const 2;
+  c: int = add a b;
+  b: int = const 3;
+  d: int = add a b;
+  print d;
+}
+
+
+@main() {
+  a: int = const 1;
+
+  # local dead code elimnation
+  a: int = const 3;
+  b: int = const 2;
+
+  # Common subexpression elimination
+  c: int = add a b; 
+  d: int = add a b;
+  e: int = add a b;
+}
