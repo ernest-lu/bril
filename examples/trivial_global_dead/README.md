@@ -18,7 +18,7 @@ cat ../../benchmarks/mem/adler32.bril | bril2json | python3 remove_nops.py | bri
 And we can check that we didn't mess things up too bad by running the reference interpreter `brili`:
 ```sh
 cat ../../benchmarks/mem/adler32.bril | bril2json | brili -p
-cat ../../benchmarks/mem/adler32.bril | bril2json | python3 remove_nops.py | brili -p
+cat ../../benchmarks/mem/adler32.bril | bril2json | python3 trivial_global_elim.py | brili -p
 ```
 
 By passing the `-p` flag to `brili`, we see profiling information about the execution of the program (just the number of instructions executed).
