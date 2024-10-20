@@ -1,0 +1,15 @@
+@main {
+  one: int = const 1;
+  curr: int = const 0;
+  loc: ptr<int> = id arr;
+.a:
+  x_1: int = const 1;
+  x_3: int = x_1;
+  jump .c;
+.b: 
+  x_2: int = const 2;
+  x_3: int = x_2;
+  jump .c;
+.c: 
+  print x_3;
+}

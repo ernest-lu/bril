@@ -15,22 +15,25 @@ def normalize():
     reader = csv.DictReader(sys.stdin)
     in_data = list(reader)
 
+    baseline_rows = [row for row in in_data if row['run'] == 'baseline' and row['result'].isdigit()]
     # Get normalization baselines.
     baselines = {
         row['benchmark']: int(row['result'])
-        for row in in_data
-        if row['run'] == 'baseline'
+        for row in baseline_rows
     }
+
+
 
     # Write output CSV back out.
     writer = csv.DictWriter(sys.stdout, reader.fieldnames)
     writer.writeheader()
     ratios = defaultdict(list)
     for row in in_data:
-        ratio = int(row['result']) / baselines[row['benchmark']]
-        ratios[row['run']].append(ratio)
-        row['result'] = ratio
-        writer.writerow(row)
+        if (row['result'].isdigit()):
+            ratio = int(row['result']) / baselines[row['benchmark']]
+            ratios[row['run']].append(ratio)
+            row['result'] = ratio
+            writer.writerow(row)
 
     # Print stats.
     for run, rs in ratios.items():

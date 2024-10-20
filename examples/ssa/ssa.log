@@ -1,0 +1,9 @@
+2024-10-20 16:45:37,578 - DEBUG - {}
+2024-10-20 16:45:37,579 - DEBUG - {}
+2024-10-20 16:45:37,579 - DEBUG - {}
+2024-10-20 16:45:37,579 - DEBUG - {}
+2024-10-20 16:45:37,579 - DEBUG - {'for.cond.2': ['for.body.2', 'for.end.2'], 'for.cond.7': ['for.body.7', 'for.end.7'], 'for.body.7': ['then.23', 'else.23']}
+2024-10-20 16:45:37,580 - DEBUG - {'for.cond.2': ['for.body.2', 'for.end.2'], 'for.cond.7': ['for.body.7', 'for.end.7'], 'for.body.7': ['then.23', 'else.23']}
+10-20 16:45:37,574 - DEBUG - {'b1': ['check_valid'], 'check_valid': ['body', 'end'], 'body': ['check_equal'], 'check_equal': ['found', 'check_gt'], 'check_gt': ['call_gt', 'call_lt']}
+2024-10-20 16:45:37,575 - DEBUG - {}
+2024-10-20 16:45:37,575 - DEBUG - {}

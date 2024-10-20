@@ -1,0 +1,20 @@
+@main(cond: bool) {
+.entry:
+  a.1: int = const 47;
+  br cond .left .right;
+.left:
+  a.1 = phi a.1 .entry;
+  a.2: int = add a.1 a.1;
+  jmp .exit;
+.right:
+  a.1 = phi a.1 .entry;
+  a.3: int = mul a.1 a.1;
+  jmp .exit;
+.exit:
+  a.3 = phi a.3 a.3 .left .right;
+  a.2 = phi a.2 a.2 .left .right;
+  a.1 = phi a.1 a.1 .left .right;
+  a.4: int = phi a.2 a.3 .left .right;
+  print a.4;
+  ret;
+}
