@@ -1,0 +1,9 @@
+@main() {
+    size: int = const 3;
+    v1: ptr<int> = alloc size;
+    store v1 size;
+    a_1: int = load v1;
+    store v1 size;
+    a_2: int = load v1;
+}
+

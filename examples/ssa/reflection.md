@@ -14,7 +14,7 @@ These are the aggregate statistics post SSA implementation:
 
 I didn't run any dead code elimnation or liveness analysis on this SSA implementation. A lot of single assignment instructions are being added. 
 
-My LICM implementation generally follows this logic:
+My LICM implementation follows this logic:
 1) Compute dominating relations
 2) Loop through blocks to determine whether or not blocks can be hoisted out of
     - A block can be hoisted out of if it dominates all of its exits
@@ -25,7 +25,7 @@ Then, we get these statistics:
 geomean(baseline) = 1.00
 min(baseline) = 1.00
 max(baseline) = 1.00
-geomean(licm) = 2.71
+geomean(licm) = 2.51
 min(licm) = 1.01
 max(licm) = 6.22
 ```
