@@ -48,13 +48,15 @@ def get_points_to(block_map):
                 and isinstance(instr["type"], dict)
                 and "ptr" in instr["type"]
             ):
+                src = instr["args"][0]
                 if instr["dest"] not in out_set:
                     out_set[instr["dest"]] = set()
-                out_set[instr["dest"]].update(in_set[instr["src"]])
+                out_set[instr["dest"]].update(out_set[src])
             elif instr["op"] == "ptradd":
+                src = instr["args"][0]
                 if instr["dest"] not in out_set:
                     out_set[instr["dest"]] = set()
-                out_set[instr["dest"]].update(in_set[instr["src"]])
+                out_set[instr["dest"]].update(out_set[src])
 
         return out_set
 
@@ -117,8 +119,8 @@ def trivial_dead_store(points_to, block_map):
                                     if var in unused_vars:
                                         unused_vars.pop(var)
 
-        for var, loc in unused_vars.items():
-            is_dead_instr[loc] = True
+        # for var, loc in unused_vars.items():
+        #     is_dead_instr[loc] = True
 
         for instr_id, instr in enumerate(block_map[block_name]):
             if not is_dead_instr[instr_id]:
@@ -129,7 +131,7 @@ def trivial_dead_store(points_to, block_map):
 
 def no_ptr_args(fn):
     return "args" not in fn or not any(
-        arg["type"] == {"ptr": "int"} for arg in fn["args"]
+        isinstance(arg["type"], dict) and "ptr" in arg["type"] for arg in fn["args"]
     )
 
 

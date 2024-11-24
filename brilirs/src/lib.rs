@@ -19,8 +19,6 @@ pub mod check;
 pub mod cli;
 #[doc(hidden)]
 pub mod error;
-/// Provides ```interp::execute_main``` to execute [Program] that have been converted into [`BBProgram`]
-pub mod interp;
 
 #[doc(hidden)]
 pub fn run_input<T: std::io::Write, U: std::io::Write>(
@@ -45,7 +43,7 @@ pub fn run_input<T: std::io::Write, U: std::io::Write>(
   check::type_check(&bbprog)?;
 
   if !check {
-    interp::execute_main(&bbprog, out, input_args, profiling, profiling_out)?;
+    // interp::execute_main(&bbprog, out, input_args, profiling, profiling_out)?;
   }
 
   Ok(())
